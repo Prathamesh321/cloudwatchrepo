@@ -34,7 +34,7 @@ def lambda_handler(event, context):
     )
     bucket='targetetlbucket';
     #df = initial_df[(initial_df.type == "Movie")];
-    df = df.loc[:, ~df.columns.isin(['date_added', 'description', 'duration'])];
+    #df = df.loc[:, ~df.columns.isin(['date_added', 'description', 'duration'])];
     csv_buffer = StringIO()
     df.to_csv(csv_buffer,index=False);
     s3_resource.Object(bucket, s3_file_key).put(Body=csv_buffer.getvalue())
