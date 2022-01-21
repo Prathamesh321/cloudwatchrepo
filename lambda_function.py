@@ -13,7 +13,7 @@ import datetime,timedelta
 def lambda_handler(event, context):
     today=datetime.date.today()
     s3_file_key=str(today)+ ".csv"
-    s3_file_key1=s3_file_key+"-imdb.csv"
+    s3_file_key1=str(today)+"-imdb.csv"
     #s3_file_key = event['Records'][0]['s3']['object']['key'];
     bucket = 'cloudwatchbucket123';
     s3 = boto3.client('s3', aws_access_key_id='AKIATVIL4LQYAO6DOHQI',  aws_secret_access_key='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')
