@@ -13,11 +13,14 @@ import datetime,timedelta
 def lambda_handler(event, context):
     today=datetime.date.today()
     s3_file_key=str(today)+ ".csv"
+    s3_file_key1=s3_file_key+"-imdb.csv"
     #s3_file_key = event['Records'][0]['s3']['object']['key'];
     bucket = 'cloudwatchbucket123';
     s3 = boto3.client('s3', aws_access_key_id='AKIATVIL4LQYAO6DOHQI',  aws_secret_access_key='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')
     obj = s3.get_object(Bucket=bucket, Key=s3_file_key)
-    initial_df = pd.read_csv(io.BytesIO(obj['Body'].read()));
+    obj1 = s3.get_object(Bucket=bucket, Key=s3_file_key1)
+    df = pd.read_csv(io.BytesIO(obj['Body'].read()));
+    df_imdb = pd.read_csv(io.BytesIO(obj1['Body'].read()));
 
     service_name = 's3'
     region_name = 'ap-south-1'
@@ -30,8 +33,15 @@ def lambda_handler(event, context):
         aws_secret_access_key=aws_secret_access_key
     )
     bucket='targetetlbucket';
-    df = initial_df[(initial_df.type == "Movie")];
-    df1 = df.loc[:, ~df.columns.isin(['date_added', 'description', 'duration'])];
+    #df = initial_df[(initial_df.type == "Movie")];
+    df = df.loc[:, ~df.columns.isin(['date_added', 'description', 'duration'])];
     csv_buffer = StringIO()
-    df1.to_csv(csv_buffer,index=False);
+    df.to_csv(csv_buffer,index=False);
     s3_resource.Object(bucket, s3_file_key).put(Body=csv_buffer.getvalue())
+
+    bucket='targetbucketimdb';
+    df_imdb = df_imdb.loc[:, ~df_imdb.columns.isin(['Released', 'Plot', 'Awards','Poster','Ratings','Metascore','imdbID','DVD,BoxOffice','Production','Website','Response'])];
+    csv_buffer = StringIO()
+    df_imdb.to_csv(csv_buffer,index=False);
+    s3_resource.Object(bucket, s3_file_key1).put(Body=csv_buffer.getvalue())
+    
