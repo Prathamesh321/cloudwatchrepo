@@ -40,7 +40,7 @@ def lambda_handler(event, context):
     s3_resource.Object(bucket, s3_file_key).put(Body=csv_buffer.getvalue())
 
     bucket='targetbucketimdb';
-    df_imdb = df_imdb.loc[:, ~df_imdb.columns.isin(['Released', 'Plot', 'Awards','Poster','Ratings','Metascore','imdbID','DVD,BoxOffice','Production','Website','Response'])];
+    df_imdb = df_imdb.loc[:, ~df_imdb.columns.isin(['Released','Awards','Poster','imdbID','Production','Website','Response'])];
     csv_buffer = StringIO()
     df_imdb.to_csv(csv_buffer,index=False);
     s3_resource.Object(bucket, s3_file_key1).put(Body=csv_buffer.getvalue())
