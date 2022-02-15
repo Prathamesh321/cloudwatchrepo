@@ -7,16 +7,19 @@
 import pandas as pd
 import boto3
 import io
+import os
 from io import StringIO
 import datetime,timedelta
 
 def lambda_handler(event, context):
+    key1=os.environ['Access_key']
+    key2=os.environ['Secret_access_key']
     today=datetime.date.today()
     s3_file_key=str(today)+ ".csv"
     s3_file_key1=str(today)+"-imdb.csv"
     #s3_file_key = event['Records'][0]['s3']['object']['key'];
     bucket = 'cloudwatchbucket123';
-    s3 = boto3.client('s3', aws_access_key_id='AKIATVIL4LQYAO6DOHQI',  aws_secret_access_key='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')
+    s3 = boto3.client('s3', aws_access_key_id=key1,  aws_secret_access_key=key2)
     obj = s3.get_object(Bucket=bucket, Key=s3_file_key)
     obj1 = s3.get_object(Bucket=bucket, Key=s3_file_key1)
     df = pd.read_csv(io.BytesIO(obj['Body'].read()));
@@ -25,8 +28,8 @@ def lambda_handler(event, context):
 
     service_name = 's3'
     region_name = 'ap-south-1'
-    aws_access_key_id = 'AKIATVIL4LQYAO6DOHQI'
-    aws_secret_access_key = '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'
+    aws_access_key_id = key1
+    aws_secret_access_key = key2
     s3_resource = boto3.resource(
         service_name=service_name,
         region_name=region_name,
