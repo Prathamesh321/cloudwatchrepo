@@ -20,6 +20,7 @@ def lambda_handler(event, context):
     obj = s3.get_object(Bucket=bucket, Key=s3_file_key)
     obj1 = s3.get_object(Bucket=bucket, Key=s3_file_key1)
     df = pd.read_csv(io.BytesIO(obj['Body'].read()));
+    df['type'].replace({0: "movie", 1: "series"}, inplace=True);
     df_imdb = pd.read_csv(io.BytesIO(obj1['Body'].read()));
 
     service_name = 's3'
